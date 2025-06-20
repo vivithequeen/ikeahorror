@@ -10,9 +10,12 @@ var paused := false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 #headbob
-var headBobSpeed : float = 1; #headbobs per second
+var headbobSpeed : float = 2; #headbobs per second
+var headbobTimer : float = 0;
+const headbobLength : float = 0.2;
 
-
+#sprint
+const sprintMuti : float = 1.45;
 func _ready() -> void:
 	update_mouse_mode()
 func _physics_process(delta):
@@ -21,16 +24,17 @@ func _physics_process(delta):
 
 	# Add the gravity.
 	handle_crouch(delta)
+	headbob(delta)
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-
+	var isSprinting = Input.is_action_pressed("sprint")
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
 	if direction:
-		velocity.x = direction.x * SPEED 
-		velocity.z = direction.z * SPEED 
+		velocity.x = direction.x * SPEED * (sprintMuti if isSprinting else 1.0)
+		velocity.z = direction.z * SPEED * (sprintMuti if isSprinting else 1.0)
 
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
@@ -53,8 +57,13 @@ func handle_crouch(delta):
 	if(is_crouched):
 		t.tween_property($Camera3D, "position", Vector3.UP * 0, delta * 15)
 	else:
-		t.tween_property($Camera3D, "position", Vector3.UP * 1, delta * 15)
+		t.tween_property($Camera3D, "position", Vector3.UP * (sin(headbobTimer) * headbobLength + 1), delta * 15)
 
+func headbob(delta):
+	if(velocity.x + velocity.z != 0):
+		headbobTimer += delta * headbobSpeed * (sprintMuti if Input.is_action_pressed("sprint") else 1.0)
+	if(headbobTimer>PI):
+		headbobTimer = 0;
 
 
 func update_mouse_mode():
