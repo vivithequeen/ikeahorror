@@ -10,9 +10,9 @@ var paused := false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 #headbob
-var headbobSpeed : float = 2; #headbobs per second
+var headbobSpeed : float = 4; #headbobs per second
 var headbobTimer : float = 0;
-const headbobLength : float = 0.2;
+const headbobLength : float = 0.4;
 
 #sprint
 const sprintMuti : float = 1.45;
