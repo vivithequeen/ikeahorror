@@ -1,7 +1,7 @@
 extends CharacterBody3D
 const SPEED = 5.0
 const JUMP_VELOCITY = 4.8
-const LOOKSENSE := 0.0025 * 4
+const LOOKSENSE := 0.0025
 
 @onready var camera: Camera3D = $Camera3D
 #@onready var raycast : RayCast3D = $Camera3D/RayCast3D
@@ -9,21 +9,22 @@ const LOOKSENSE := 0.0025 * 4
 var paused := false
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-	
+#headbob
+var headBobSpeed : float = 1; #headbobs per second
+
+
+func _ready() -> void:
+	update_mouse_mode()
 func _physics_process(delta):
 	
 
-	#camera.rotation.x = lerp($Camera3D.rotation.x, camera_smooth.rotation.x,delta * 3);
-	#camera.rotation.y = lerp(camera.rotation.y, camera_smooth.rotation.y,delta * 3);$Camera3D.rotation.x = clamp($Camera3D.rotation.x, -PI / 2, PI / 2);
-	update_mouse_mode()
+
 	# Add the gravity.
-	
+	handle_crouch(delta)
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	if Input.is_action_just_pressed("space") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-	
+
 	var input_dir = Input.get_vector("left", "right", "up", "down")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
@@ -39,6 +40,20 @@ func _physics_process(delta):
 
 
 
+func handle_crouch(delta):
+	var is_crouched = Input.is_action_pressed("ctrl")
+
+
+	if(!is_crouched and $upward_check.is_colliding()):
+		is_crouched = true
+	$CollisionShape3D.shape.height = 1 if is_crouched else 2
+	$CollisionShape3D.position.y = -0.5 if is_crouched else 0.0
+	var t = get_tree().create_tween()
+
+	if(is_crouched):
+		t.tween_property($Camera3D, "position", Vector3.UP * 0, delta * 15)
+	else:
+		t.tween_property($Camera3D, "position", Vector3.UP * 1, delta * 15)
 
 
 

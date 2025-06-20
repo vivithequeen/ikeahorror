@@ -1,34 +1,68 @@
-[gd_scene load_steps=5 format=3 uid="uid://d273m273baqol"]
+[gd_scene load_steps=10 format=3 uid="uid://d273m273baqol"]
 
 [ext_resource type="PackedScene" uid="uid://dwq47k5mf2og0" path="res://player/player.tscn" id="1_hyk8p"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hyk8p"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-
-[sub_resource type="Sky" id="Sky_iuonh"]
-sky_material = SubResource("ProceduralSkyMaterial_hyk8p")
+[ext_resource type="PackedScene" uid="uid://dd50mh01048vu" path="res://models/shark/scene.gltf" id="2_iuonh"]
+[ext_resource type="PackedScene" uid="uid://bi170x6eg8o66" path="res://models/Low Poly Furniture/Drawers/Drawer A.fbx" id="3_k2fmo"]
+[ext_resource type="PackedScene" uid="uid://dtex7sufh1604" path="res://models/Low Poly Furniture/Lights/Lamp C.fbx" id="4_l3cfh"]
+[ext_resource type="PackedScene" uid="uid://dmds1ra18mdw2" path="res://models/Low Poly Furniture/Beds/Bed Single.fbx" id="5_hujxm"]
+[ext_resource type="PackedScene" uid="uid://si1wy5al0ffp" path="res://models/Low Poly Furniture/Shelves/Shelf A.fbx" id="6_yyfjg"]
+[ext_resource type="PackedScene" uid="uid://du8uht1rjn731" path="res://models/Low Poly Furniture/Miscellaneous/Ceiling Fan.fbx" id="7_b1x3f"]
 
 [sub_resource type="Environment" id="Environment_k2fmo"]
-background_mode = 2
-sky = SubResource("Sky_iuonh")
+background_mode = 1
 tonemap_mode = 2
-glow_enabled = true
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
+sdfgi_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hyk8p"]
+albedo_color = Color(0.288518, 0.288518, 0.288518, 1)
 
 [node name="main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_k2fmo")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
-shadow_enabled = true
-
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
 use_collision = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
 flip_faces = true
-size = Vector3(4, 4, 4)
+size = Vector3(12, 4, 4)
+material = SubResource("StandardMaterial3D_hyk8p")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, -0.15, -4)
+flip_faces = true
+size = Vector3(4.2, 3.7, 4)
+material = SubResource("StandardMaterial3D_hyk8p")
 
 [node name="player" parent="." instance=ExtResource("1_hyk8p")]
+
+[node name="Sketchfab_Scene" parent="." instance=ExtResource("2_iuonh")]
+transform = Transform3D(0.153093, -0.0883883, -0.176777, 0.125, 0.216506, 0, 0.153093, -0.0883884, 0.176777, 0.8, -1.45381, -4.8)
+
+[node name="Drawer A" parent="." instance=ExtResource("3_k2fmo")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 2.9, -1.34795, -5.37548)
+
+[node name="Lamp C" parent="." instance=ExtResource("4_l3cfh")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 3.43263, -0.519814, -5.64748)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.44113, 0.114566, -5.63897)
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4074, -0.475065, -5.5349)
+
+[node name="Bed Single" parent="." instance=ExtResource("5_hujxm")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.9, -1.6, -4.6)
+
+[node name="Shelf A" parent="." instance=ExtResource("6_yyfjg")]
+transform = Transform3D(-1.31134e-08, 0, -0.3, 0, 0.3, 0, 0.3, 0, -1.31134e-08, 3.7, -0.4, -3.4)
+
+[node name="Ceiling Fan" parent="." instance=ExtResource("7_b1x3f")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 2.2, 1.4, -4.2)
